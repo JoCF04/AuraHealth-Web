@@ -1,4 +1,4 @@
-package com.aurahealth.api.auracontrollers;
+package com.AuraHealth.api.auracontrollers;
 
 import com.aurahealth.api.auradtos.*;
 import com.aurahealth.api.auraservices.UserService;
@@ -90,6 +90,23 @@ public class UserController {
         return ResponseEntity.ok(userService.actualizarPerfilDeSalud(userId, dto));
     }
 
+    // ── HU07 — Signos vitales ─────────────────────────────────────────────────
+
+    @Operation(summary = "HU07 — Registrar signos vitales (Motor de Reglas Médicas)",
+               description = "Evalúa glucosa ≥126, presión ≥140/90, colesterol ≥240. " +
+                             "Si hay alerta: vitalAlertFlag=true y alertMessage con detalle.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Signos vitales registrados."),
+        @ApiResponse(responseCode = "400", description = "Formato de presión inválido."),
+        @ApiResponse(responseCode = "404", description = "Usuario no encontrado.")
+    })
+    @PatchMapping("/users/{userId}/vital-signs")
+    public ResponseEntity<HealthProfileResponseDTO> updateVitalSigns(
+            @Parameter(description = "ID del usuario", example = "1", required = true)
+            @PathVariable Long userId,
+            @RequestBody VitalSignsRequestDTO dto) {
+        return ResponseEntity.ok(userService.registrarSignosVitales(userId, dto));
+    }
 
     // ── HU06 — Cambiar idioma ─────────────────────────────────────────────────
 

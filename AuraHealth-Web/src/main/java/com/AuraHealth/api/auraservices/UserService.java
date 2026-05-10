@@ -1,4 +1,4 @@
-package com.aurahealth.api.auraservices;
+package com.AuraHealth.api.auraservices;
 
 import com.aurahealth.api.auraentities.HealthProfile;
 import com.aurahealth.api.auraentities.User;
