@@ -1,0 +1,1136 @@
+// @ts-nocheck
+// ================================================================
+// AURAHEALTH - FIGMA SCRIPTER v2.0 - 100% fiel al repositorio
+// ================================================================
+// INSTRUCCIONES:
+//   1. Figma -> Plugins -> Scripter (instalar gratis)
+//   2. Pegar TODO este codigo -> Run (triangulo verde)
+//   3. Genera 11 frames moviles iPhone 14 (390 x 844 px)
+// ================================================================
+// PANTALLAS: 00 Onboarding  01 Login  02 Register  03 Dashboard
+//            04 Dashboard+Bot  05 Recordatorios  06 Recomendaciones
+//            07 Perfil  08 Partner Ana  09 Partner Carlos  10 Modales
+// ================================================================
+
+const DS = {
+  // Colores light
+  bg:              { r:0.941, g:0.984, b:0.988 },  // #f0fbfc
+  surface:         { r:1,    g:1,    b:1    },  // #ffffff
+  turquoise:       { r:0.302, g:0.722, b:0.784 },  // #4db8c8
+  turquoiseLight:  { r:0.831, g:0.945, b:0.961 },  // #d4f1f5
+  blueDark:        { r:0.102, g:0.227, b:0.431 },  // #1a3a6e
+  blueMid:         { r:0.129, g:0.333, b:0.639 },  // #2155a3
+  text:            { r:0.102, g:0.102, b:0.180 },  // #1a1a2e
+  textMuted:       { r:0.353, g:0.392, b:0.471 },  // #5a6478
+  border:          { r:0.784, g:0.910, b:0.929 },  // #c8e8ed
+  // Colores semnticos
+  green:           { r:0.133, g:0.710, b:0.451 },  // #22b573
+  greenLight:      { r:0.831, g:0.957, b:0.894 },  // #d4f4e4
+  orange:          { r:0.941, g:0.439, b:0.188 },  // #f07030
+  orangeLight:     { r:0.992, g:0.910, b:0.831 },  // #fde8d4
+  purple:          { r:0.533, g:0.267, b:0.878 },  // #8844e0
+  purpleLight:     { r:0.929, g:0.894, b:0.984 },  // #ede4fb
+  blueLight:       { r:0.863, g:0.910, b:0.984 },  // #dce8fb
+  red:             { r:0.941, g:0.329, b:0.329 },  // #f05454
+  white:           { r:1,    g:1,    b:1    },
+  // Dark mode  (body.dark en style.css)
+  dkBg:            { r:0.059, g:0.098, b:0.137 },  // #0f1923
+  dkSurface:       { r:0.102, g:0.145, b:0.208 },  // #1a2535
+  dkTurquoise:     { r:0.220, g:0.659, b:0.722 },  // #38a8b8
+  dkBlueDark:      { r:0.290, g:0.561, b:0.831 },  // #4a8fd4
+  dkBlueMid:       { r:0.416, g:0.671, b:0.969 },  // #6aabf7
+  dkText:          { r:0.910, g:0.957, b:0.973 },  // #e8f4f8
+  dkTextMuted:     { r:0.545, g:0.667, b:0.749 },  // #8baabf
+  dkBorder:        { r:0.165, g:0.239, b:0.314 },  // #2a3d50
+  // Radios  (--radius: 14px  --radius-sm: 8px)
+  RADIUS:    14,
+  RADIUS_SM:  8,
+};
+
+// 
+//  DATOS EXACTOS DEL REPOSITORIO
+// 
+
+// js/partner.js  DEMO_PARTNERS
+const PARTNERS = {
+  ana: {
+    name:'Ana García', initials:'AG', lastSeen:'Hace 2h',
+    meds:[
+      { name:'Metformina 500mg',  freq:'2x día',         done:true  },
+      { name:'Vitamina D 1000UI', freq:'1x día',         done:true  },
+      { name:'Omeprazol 20mg',    freq:'Antes de comer', done:false },
+    ],
+    activity:[
+      { label:'Pasos',    curr:7200, goal:10000, unit:'pasos' },
+      { label:'Agua',     curr:1.8,  goal:2.5,   unit:'L'    },
+      { label:'Sueño',    curr:7,    goal:8,     unit:'h'    },
+      { label:'Calorías', curr:1650, goal:2200,  unit:'kcal' },
+    ],
+    reminders:[
+      { name:'Chequeo médico anual',  time:'9:00 AM', done:true  },
+      { name:'Pastillas – Omeprazol', time:'8:00 PM', done:false },
+    ],
+  },
+  carlos: {
+    name:'Carlos López', initials:'CL', lastSeen:'Hace 45 min',
+    meds:[
+      { name:'Losartán 50mg',  freq:'1x día', done:true  },
+      { name:'Aspirina 100mg', freq:'1x día', done:false },
+    ],
+    activity:[
+      { label:'Pasos',    curr:4500, goal:8000, unit:'pasos' },
+      { label:'Agua',     curr:1.2,  goal:2.0,  unit:'L'    },
+      { label:'Sueño',    curr:5.5,  goal:8,    unit:'h'    },
+      { label:'Calorías', curr:2100, goal:2500, unit:'kcal' },
+    ],
+    reminders:[
+      { name:'Control de presión', time:'10:00 AM', done:false },
+      { name:'Aspirina 100mg',     time:'9:00 PM',  done:false },
+    ],
+  },
+};
+
+// js/recordatorios.js  reminders (mayo 2026)
+const RECORDATORIOS = [
+  { name:'Chequeo médico',          type:'medical',  date:'10 mayo', time:'08:00', done:false },
+  { name:'Pastillas – Omeprazol',   type:'medicine', date:'10 mayo', time:'20:00', done:true  },
+  { name:'Exámenes de laboratorio', type:'exam',     date:'15 mayo', time:'06:30', done:false },
+  { name:'Vacuna Influenza',        type:'vaccine',  date:'17 mayo', time:'10:00', done:false },
+  { name:'Pastillas – Metformina',  type:'medicine', date:'22 mayo', time:'20:00', done:false },
+];
+// Das con eventos en mayo 2026
+const CALENDAR_EVENT_DAYS = new Set([10, 15, 17, 22]);
+
+// js/main.js  AuraBot messages & chips
+const BOT_INIT     = '¡Hola, Jake! 👋 Soy AuraBot, tu asistente de salud personal. ¿En qué puedo ayudarte hoy?';
+const BOT_USER_MSG = '¿Qué pastillas debo tomar hoy?';
+const BOT_REPLY    = 'Recuerda tomar tus pastillas con abundante agua y a la misma hora cada día. 💊';
+const BOT_CHIPS    = ['¿Qué pastillas tomar?', 'Consejo de ejercicio', 'Agendar cita'];
+
+// 
+//  LAYOUT
+// 
+const W   = 390;   // iPhone 14 width
+const H   = 844;   // iPhone 14 height
+const GAP = 72;
+const NAV = 80;    // mobile-nav height
+const TOP = 50;    // status bar
+const PAD = 20;    // padding lateral
+const R   = DS.RADIUS;
+const RSM = DS.RADIUS_SM;
+
+// 
+//  HELPERS PRIMITIVOS
+// 
+function solid(c, a=1)       { return [{ type:'SOLID', color:c, opacity:a }]; }
+function noFill()            { return []; }
+
+function linGrad(c1, c2, deg=135) {
+  const r = deg*Math.PI/180;
+  const cos=Math.cos(r), sin=Math.sin(r);
+  return [{
+    type:'GRADIENT_LINEAR',
+    gradientTransform:[[cos,-sin,.5-.5*cos+.5*sin],[sin,cos,.5-.5*sin-.5*cos]],
+    gradientStops:[
+      {position:0,color:{...c1,a:1}},
+      {position:1,color:{...c2,a:1}},
+    ],
+  }];
+}
+
+// Crea un Rectangle y lo aade al parent
+function R_(parent, x,y,w,h, fill, radius=0, opacity=1, stroke=null, sw=1) {
+  const n = figma.createRectangle();
+  n.x=x; n.y=y; n.resize(Math.max(w,1), Math.max(h,1));
+  if(fill===null||fill===undefined) n.fills=[];
+  else if(typeof fill==='function') n.fills=fill();
+  else if(Array.isArray(fill)) n.fills=fill;
+  else n.fills=solid(fill,opacity);
+  n.cornerRadius = radius;
+  n.strokeWeight = sw;
+  n.strokes = stroke ? solid(stroke) : [];
+  parent.appendChild(n);
+  return n;
+}
+
+function RG(parent, x,y,w,h, c1,c2, deg=135, radius=0) {
+  const n = figma.createRectangle();
+  n.x=x; n.y=y; n.resize(Math.max(w,1), Math.max(h,1));
+  n.fills    = linGrad(c1,c2,deg);
+  n.cornerRadius = radius;
+  n.strokeWeight = 0;
+  parent.appendChild(n);
+  return n;
+}
+
+function E_(parent, cx,cy, rx,ry, fill, opacity=1) {
+  const n = figma.createEllipse();
+  n.resize(rx*2, ry*2);
+  n.x=cx-rx; n.y=cy-ry;
+  n.fills    = Array.isArray(fill)?fill:solid(fill,opacity);
+  n.strokeWeight=0;
+  parent.appendChild(n);
+  return n;
+}
+
+// Crea un Frame y lo aade al parent (o a la pgina si parent===null)
+function F_(parent, x,y,w,h, fill, name='f', radius=0) {
+  const n = figma.createFrame();
+  n.name=name; n.x=x; n.y=y;
+  n.resize(Math.max(w,1), Math.max(h,1));
+  n.fills    = Array.isArray(fill)?fill:(fill?solid(fill):noFill());
+  n.cornerRadius = radius;
+  n.clipsContent = true;
+  n.strokeWeight = 0;
+  if(parent) parent.appendChild(n); else figma.currentPage.appendChild(n);
+  return n;
+}
+
+function FG(parent, x,y,w,h, c1,c2, deg=135, name='f', radius=0) {
+  const n = figma.createFrame();
+  n.name=name; n.x=x; n.y=y;
+  n.resize(Math.max(w,1), Math.max(h,1));
+  n.fills    = linGrad(c1,c2,deg);
+  n.cornerRadius = radius;
+  n.clipsContent = true;
+  n.strokeWeight = 0;
+  if(parent) parent.appendChild(n); else figma.currentPage.appendChild(n);
+  return n;
+}
+
+// Texto (font debe estar cargada previamente)
+async function T_(parent, text, x,y, size, style, color, maxW=300, align='LEFT', opacity=1) {
+  const n = figma.createText();
+  n.x=x; n.y=y;
+  n.fontName = {family:'Inter', style};
+  n.characters = String(text);
+  n.fontSize = size;
+  n.fills = solid(color, opacity);
+  n.textAlignHorizontal = align;
+  try { n.resize(Math.max(maxW,1), n.height); } catch(_){}
+  parent.appendChild(n);
+  return n;
+}
+
+// 
+//  COMPONENTES REUTILIZABLES
+// 
+
+// Status bar
+async function StatusBar(p, dark=false) {
+  const fg = dark ? DS.dkText : DS.white;
+  await T_(p,'9:41',   PAD,  16, 14,'Semi Bold', fg, 50);
+  await T_(p,'●●● ▲ ■■', W-PAD-90, 16, 10,'Regular', fg, 90,'RIGHT',.8);
+}
+
+// Status bar para fondo claro
+async function StatusBarLight(p) {
+  await T_(p,'9:41',   PAD,  16, 14,'Semi Bold', DS.text, 50);
+  await T_(p,'●●● ▲ ■■', W-PAD-90, 16, 10,'Regular', DS.textMuted, 90,'RIGHT',.8);
+}
+
+// Bottom nav (exacto al CSS .mobile-nav)
+async function BottomNav(p, active='dashboard', dark=false) {
+  const bg  = dark ? DS.dkSurface : DS.surface;
+  const brd = dark ? DS.dkBorder  : DS.border;
+  const act = dark ? DS.dkBlueDark: DS.blueDark;
+  const muted = dark ? DS.dkTextMuted : DS.textMuted;
+
+  const nav = F_(p, 0, H-NAV, W, NAV, bg, 'MobileNav');
+  R_(nav, 0,0, W,1, brd);  // border-top
+
+  const items = [
+    { id:'dashboard',       icon:'⊞', label:'Inicio'   },
+    { id:'recordatorios',   icon:'🔔', label:'Recordat.'},
+    { id:'recomendaciones', icon:'★',  label:'Recs'    },
+    { id:'perfil',          icon:'◉',  label:'Perfil'  },
+    { id:'partner',         icon:'⇌',  label:'Partner' },
+  ];
+  const iw = W / items.length;
+
+  for(let i=0;i<items.length;i++){
+    const it = items[i];
+    const isAct = it.id===active;
+    const ix = i*iw;
+
+    if(isAct){
+      // Active indicator (thin bar top)
+      R_(nav, ix+iw/2-18, 0, 36, 3, act, 2);
+      // Active icon bg pill
+      R_(nav, ix+iw/2-20, 8, 40, 28, DS.turquoiseLight, 10);
+    }
+    await T_(nav, it.icon, ix,   12, 17,'Regular', isAct?act:muted, iw,'CENTER');
+    await T_(nav, it.label,ix,   44, 10, isAct?'Semi Bold':'Regular', isAct?act:muted, iw,'CENTER');
+  }
+  // safe area bar
+  R_(nav, W/2-60, NAV-6, 120,4, dark?DS.dkTextMuted:DS.textMuted, 2, .3);
+}
+
+// Donut chart nativo de Figma (arcData = nativo en Scripter)
+function DonutChart(p, cx,cy, pct, c1, c2, dark=false) {
+  const R_OUTER = 46, SW = 11;
+  // Track ring
+  const track = figma.createEllipse();
+  track.resize(R_OUTER*2, R_OUTER*2);
+  track.x=cx-R_OUTER; track.y=cy-R_OUTER;
+  track.fills=[]; track.strokes=solid(dark?DS.dkBorder:DS.turquoiseLight); track.strokeWeight=SW;
+  p.appendChild(track);
+  // Progress arc
+  const arc = figma.createEllipse();
+  arc.resize(R_OUTER*2, R_OUTER*2);
+  arc.x=cx-R_OUTER; arc.y=cy-R_OUTER;
+  arc.fills=[];
+  arc.strokes=linGrad(c1,c2,90);
+  arc.strokeWeight=SW;
+  arc.arcData={startingAngle:-Math.PI/2, endingAngle:-Math.PI/2+(2*Math.PI*pct/100), innerRadius:0};
+  p.appendChild(arc);
+}
+
+// Stat card (CSS: .stat-card + --shadow: 0 4px 20px rgba(26,58,110,.10))
+async function StatCard(p, x,y,w, iconC,iconBg, value,label,sub, dark=false) {
+  const bg  = dark?DS.dkSurface:DS.surface;
+  const brd = dark?DS.dkBorder :DS.border;
+  const textC  = dark?DS.dkText    :DS.text;
+  const mutedC = dark?DS.dkTextMuted:DS.textMuted;
+
+  const card = F_(p, x,y, w,84, bg,'StatCard',R);
+  // sombra simulada (stroke perimetral leve como en --shadow)
+  card.strokes=solid(brd); card.strokeWeight=1;
+
+  // icon container (.stat-icon + color variant)
+  R_(card, 14,16, 52,52, iconBg, 12);
+  E_(card, 40,42, 12,12, iconC);
+
+  await T_(card, label, 80,14, 11,'Regular', mutedC, w-88);
+  await T_(card, value, 80,28, 17,'Bold',    textC,  w-88);
+  await T_(card, sub,   80,50, 10,'Regular', mutedC, w-88);
+}
+
+// Tarjeta base con sombra (CSS: .card)
+function Card(p, x,y,w,h, dark=false, name='Card') {
+  const c = F_(p, x,y,w,h, dark?DS.dkSurface:DS.surface, name, R);
+  c.strokes=solid(dark?DS.dkBorder:DS.border,.7);
+  c.strokeWeight=1;
+  return c;
+}
+
+// Input field genrico
+async function InputField(p, x,y,w, placeholder, label, dark=false) {
+  const bg  = dark?DS.dkBg:DS.bg;
+  const brd = dark?DS.dkBorder:DS.border;
+  const mutedC = dark?DS.dkTextMuted:DS.textMuted;
+  const textC  = dark?DS.dkText:DS.text;
+  if(label) await T_(p, label, x,y, 11,'Semi Bold', mutedC, w);
+  const yy = label?y+18:y;
+  const inp = R_(p, x,yy, w,46, bg, RSM);
+  inp.strokes=solid(brd); inp.strokeWeight=1.5;
+  await T_(p, placeholder, x+14,yy+14, 13,'Regular', mutedC, w-28);
+}
+
+// Reminder item (CSS: .reminder-item / .done)
+async function ReminderItem(p, x,y,w, name,time,tag,tagC,tagBg,done=false, dark=false) {
+  const alpha = done ? .55 : 1;
+  const bg   = done ? DS.turquoiseLight : (dark?DS.dkBg:DS.bg);
+  const brd  = done ? DS.turquoise : (dark?DS.dkBorder:DS.border);
+  const textC= dark?DS.dkText:DS.text;
+
+  const item = F_(p, x,y,w,68, bg,'ReminderItem',RSM);
+  item.strokes=solid(brd,.8); item.strokeWeight=1;
+
+  // Checkbox (.reminder-check)
+  const cbBg = done?DS.blueDark:{r:0,g:0,b:0};
+  const cb = figma.createRectangle();
+  cb.x=12; cb.y=23; cb.resize(22,22);
+  cb.fills = done?solid(DS.blueDark):[];
+  cb.strokes=solid(dark?DS.dkBlueDark:DS.blueDark); cb.strokeWeight=2; cb.cornerRadius=6;
+  item.appendChild(cb);
+  if(done) await T_(item,'✓',16,24,13,'Bold',DS.white,18,'CENTER');
+
+  // Nombre (.reminder-name con text-decoration:line-through si done)
+  const nameStyle = done ? 'Regular' : 'Semi Bold';
+  await T_(item, name, 46,10, 12, nameStyle, textC, w-140, 'LEFT', alpha);
+
+  // Time pill (.reminder-time)
+  R_(item, 46,30, 94,22, DS.blueDark, 11);
+  await T_(item, time, 52,35, 10,'Regular', DS.white, 86);
+
+  // Tag pill (.reminder-tag)
+  R_(item, w-82, 8, 70,22, tagBg, 11);
+  await T_(item, tag, w-78, 12, 9,'Semi Bold', tagC, 66);
+}
+
+// Progress bar (CSS: .progress-track / .progress-fill)
+async function ProgressBar(p, x,y,w, label, curr, goal, unit, colorFill, dark=false) {
+  const pct    = Math.min(100, Math.round(curr/goal*100));
+  const mutedC = dark?DS.dkTextMuted:DS.textMuted;
+  const textC  = dark?DS.dkText:DS.text;
+  const track  = dark?DS.dkBorder:DS.turquoiseLight;
+  const valTxt = `${curr} / ${goal} ${unit}  ${pct}%`;
+
+  await T_(p, label,  x,   y,    12,'Semi Bold', textC,  w/2);
+  await T_(p, valTxt, x+w/2, y,  10,'Regular',   mutedC, w/2,'RIGHT');
+  R_(p, x, y+18, w,7, track, 3.5);
+  const fillBar = R_(p, x, y+18, Math.max(2,Math.round(w*pct/100)), 7, null, 3.5);
+  fillBar.fills=linGrad(colorFill, DS.blueMid, 90);
+}
+
+// 
+//  SCREEN 00  ONBOARDING
+// 
+async function Screen_Onboarding(xOff) {
+  const f = FG(null, xOff,0,W,H, DS.blueDark, DS.turquoise, 145, '00 · Onboarding');
+  E_(f, W+50,-40, 190,190, DS.turquoise,.10);
+  E_(f,-50,H*.65, 160,160, DS.blueMid, .12);
+
+  await StatusBar(f,false);
+
+  // Logo
+  E_(f, W/2,220, 62,62, DS.white,.12);
+  E_(f, W/2,220, 44,44, DS.white,.22);
+  await T_(f,'♥',W/2-14,204,28,'Bold',DS.white,32);
+
+  await T_(f,'AuraHealth',  PAD,296,30,'Bold',DS.white,W-PAD*2,'CENTER');
+  await T_(f,'Tu compañero de salud preventiva',PAD,336,14,'Regular',DS.white,W-PAD*2,'CENTER',.85);
+
+  const features=['◎  Monitoreo de salud en tiempo real','◎  Recordatorios de medicamentos y citas','◎  Recomendaciones personalizadas con IA'];
+  let fy=398;
+  for(const txt of features){
+    const row=F_(f,PAD+20,fy,W-PAD*2-40,36,noFill(),'FeatRow',10);
+    row.fills=solid(DS.white,.10);
+    await T_(f,txt,PAD+36,fy+10,12,'Regular',DS.white,W-PAD*2-16);
+    fy+=46;
+  }
+
+  // CTA principal
+  const btn=R_(f,PAD,600,W-PAD*2,54, DS.white,R);
+  await T_(f,'Comenzar ahora',PAD,616,15,'Semi Bold',DS.blueDark,W-PAD*2,'CENTER');
+
+  // Skip
+  await T_(f,'Ya tengo cuenta → Iniciar sesión',PAD,668,13,'Regular',DS.white,W-PAD*2,'CENTER',.70);
+
+  // Dots pagination
+  for(let i=0;i<3;i++) E_(f,W/2-16+i*16,730, i===0?6:3, i===0?6:3, DS.white, i===0?1:0.4);
+  R_(f,W/2-60,H-8,120,4,DS.textMuted,2,.3);
+}
+
+// 
+//  SCREEN 01  LOGIN
+// 
+async function Screen_Login(xOff) {
+  const bgC1={r:0.290,g:0.498,b:0.647}, bgC2={r:0.682,g:0.808,b:0.878};
+  const f = FG(null,xOff,0,W,H,bgC1,bgC2,145,'01 · Login');
+  await StatusBar(f,false);
+
+  await T_(f,'♥',W/2-12,84,26,'Bold',DS.white,30);
+  await T_(f,'AuraHealth',PAD,118,24,'Bold',DS.white,W-PAD*2,'CENTER');
+  await T_(f,'Bienvenido de vuelta',PAD,150,13,'Regular',DS.white,W-PAD*2,'CENTER',.85);
+
+  // Card blanca desde y=205
+  const card = F_(f,0,205,W,H-205,DS.surface,'LoginCard',26);
+  await T_(card,'Iniciar Sesión',PAD,32,20,'Bold',DS.text,W-PAD*2,'CENTER');
+
+  // Campos form
+  await InputField(card,PAD,82,W-PAD*2,'usuario@email.com','Correo electrónico');
+  await InputField(card,PAD,158,W-PAD*2,'••••••••','Contraseña');
+
+  await T_(card,'¿Olvidaste tu contraseña?',PAD,222,12,'Regular',DS.turquoise,W-PAD*2,'RIGHT');
+
+  // Botn CTA con gradiente
+  RG(card,PAD,244,W-PAD*2,52, DS.blueDark,DS.turquoise,90,14);
+  await T_(card,'Iniciar Sesión',PAD,260,15,'Semi Bold',DS.white,W-PAD*2,'CENTER');
+
+  // Divider
+  R_(card,PAD+40,312,W-PAD*2-80,1,DS.border);
+  await T_(card,'o continúa con',PAD,304,11,'Regular',DS.textMuted,W-PAD*2,'CENTER');
+
+  // Botones sociales
+  const bW=(W-PAD*2-12)/2;
+  const gBtn=R_(card,PAD,324,bW,44, DS.bg,10);
+  gBtn.strokes=solid(DS.border); gBtn.strokeWeight=1;
+  await T_(card,'G  Google',PAD,340,12,'Semi Bold',DS.text,bW,'CENTER');
+
+  const fBtn=R_(card,PAD+bW+12,324,bW,44, DS.bg,10);
+  fBtn.strokes=solid(DS.border); fBtn.strokeWeight=1;
+  await T_(card,'f  Facebook',PAD+bW+12,340,12,'Semi Bold',{r:0.16,g:0.36,b:0.67},bW,'CENTER');
+
+  await T_(card,'¿No tienes cuenta? Regístrate gratis →',PAD,384,12,'Regular',DS.textMuted,W-PAD*2,'CENTER');
+  await T_(card,'Al registrarte aceptas nuestros Términos de servicio',PAD,424,10,'Regular',DS.textMuted,W-PAD*2,'CENTER',.55);
+  R_(card,W/2-60,card.height-10,120,4,DS.border,2,.3);
+}
+
+// 
+//  SCREEN 02  REGISTER (register.html)
+//  Campos: nombre, apellido, email, fecha nacimiento, sexo,
+//  contrasea + strength bar, confirmar contrasea + match hint
+// 
+async function Screen_Register(xOff) {
+  const bgC1={r:0.290,g:0.498,b:0.647}, bgC2={r:0.682,g:0.808,b:0.878};
+  const f = FG(null,xOff,0,W,H,bgC1,bgC2,145,'02 · Registro');
+  await StatusBar(f,false);
+
+  // Radial overlays (del CSS body::before)
+  E_(f, W*.2,H*.3, 140,140, DS.turquoise,.12);
+  E_(f, W*.8,H*.7, 130,130, DS.blueDark, .10);
+
+  // Card con glassmorphism simplificado
+  const card = F_(f,0,180,W,H-180,DS.surface,'RegisterCard',26);
+  card.fills=solid({r:1,g:1,b:1},.94);
+
+  // Logo
+  E_(card,W/2,36,24,24,DS.blueDark);
+  await T_(card,'AuraHealth',PAD,26,18,'Bold',DS.blueDark,W-PAD*2,'CENTER');
+  await T_(card,'Crea tu cuenta gratis',PAD,50,12,'Regular',DS.textMuted,W-PAD*2,'CENTER');
+
+  //  Fila nombre / apellido (form-row: grid 2 cols)
+  const hW=(W-PAD*2-12)/2;
+  await T_(card,'Nombre',PAD,78,11,'Semi Bold',DS.textMuted,hW);
+  const i1=R_(card,PAD,96,hW,44,DS.bg,22); i1.strokes=solid(DS.border); i1.strokeWeight=1.5;
+  await T_(card,'Ej: Jake',PAD+14,110,12,'Regular',DS.textMuted,hW-20);
+
+  await T_(card,'Apellido',PAD+hW+12,78,11,'Semi Bold',DS.textMuted,hW);
+  const i2=R_(card,PAD+hW+12,96,hW,44,DS.bg,22); i2.strokes=solid(DS.border); i2.strokeWeight=1.5;
+  await T_(card,'Ej: Salazar',PAD+hW+26,110,12,'Regular',DS.textMuted,hW-20);
+
+  // Email
+  await T_(card,'Correo electrónico',PAD,150,11,'Semi Bold',DS.textMuted,W-PAD*2);
+  const i3=R_(card,PAD,168,W-PAD*2,44,DS.bg,22); i3.strokes=solid(DS.border); i3.strokeWeight=1.5;
+  await T_(card,'tu@email.com',PAD+14,182,12,'Regular',DS.textMuted,W-PAD*2-20);
+
+  // Fila Fecha / Sexo
+  await T_(card,'Fecha de nacimiento',PAD,222,11,'Semi Bold',DS.textMuted,hW);
+  const i4=R_(card,PAD,240,hW,44,DS.bg,22); i4.strokes=solid(DS.border); i4.strokeWeight=1.5;
+  await T_(card,'DD/MM/AAAA',PAD+14,254,11,'Regular',DS.textMuted,hW-20);
+
+  await T_(card,'Sexo',PAD+hW+12,222,11,'Semi Bold',DS.textMuted,hW);
+  const i5=R_(card,PAD+hW+12,240,hW,44,DS.bg,22); i5.strokes=solid(DS.border); i5.strokeWeight=1.5;
+  await T_(card,'Masculino ▾',PAD+hW+26,254,12,'Regular',DS.textMuted,hW-20);
+
+  //  Contrasea + strength bar
+  await T_(card,'Contraseña',PAD,294,11,'Semi Bold',DS.textMuted,W-PAD*2);
+  const i6=R_(card,PAD,312,W-PAD*2,44,DS.bg,22); i6.strokes=solid(DS.border); i6.strokeWeight=1.5;
+  await T_(card,'••••••••••',PAD+14,326,13,'Regular',DS.textMuted,W-PAD*2-42);
+  await T_(card,'👁',W-PAD-30,326,14,'Regular',DS.textMuted,22); // toggle-pw
+
+  // Strength bar (.strength-bar: 4 segmentos  estado "Fuerte" = 3 verdes)
+  const segW=(W-PAD*2-18)/4;
+  const segColors=[DS.green,DS.green,DS.green,DS.border];
+  for(let s=0;s<4;s++){
+    R_(card,PAD+s*(segW+6),362,segW,4,segColors[s],2);
+  }
+  await T_(card,'Fuerte 💪',PAD,370,10,'Regular',DS.green,80);
+
+  //  Confirmar contrasea + match hint
+  await T_(card,'Confirmar contraseña',PAD,392,11,'Semi Bold',DS.textMuted,W-PAD*2);
+  const i7=R_(card,PAD,410,W-PAD*2,44,DS.bg,22);
+  i7.strokes=solid(DS.green); i7.strokeWeight=1.5;  // estado: match
+  await T_(card,'••••••••••',PAD+14,424,13,'Regular',DS.textMuted,W-PAD*2-42);
+  await T_(card,'✓ Las contraseñas coinciden',PAD,458,10,'Regular',DS.green,W-PAD*2);
+
+  //  Terms checkbox
+  const chk=figma.createEllipse(); chk.resize(16,16); chk.x=PAD; chk.y=476;
+  chk.fills=solid(DS.blueDark); chk.strokeWeight=0; card.appendChild(chk);
+  await T_(card,'✓',PAD+1,477,10,'Bold',DS.white,14,'CENTER');
+  await T_(card,'Acepto los Términos de servicio y Política de privacidad',PAD+22,477,10,'Regular',DS.textMuted,W-PAD*2-22);
+
+  //  Botn registro
+  RG(card,PAD,504,W-PAD*2,50, DS.blueDark,{r:0.165,g:0.322,b:0.596},135,25);
+  await T_(card,'Crear cuenta →',PAD,520,15,'Semi Bold',DS.white,W-PAD*2,'CENTER');
+
+  await T_(card,'¿Ya tienes cuenta? Iniciar sesión →',PAD,566,12,'Regular',DS.textMuted,W-PAD*2,'CENTER');
+  R_(card,W/2-60,card.height-10,120,4,DS.border,2,.3);
+}
+
+// 
+//  SCREEN 03  DASHBOARD LIGHT
+// 
+async function Screen_Dashboard(xOff) {
+  const f = F_(null,xOff,0,W,H,DS.bg,'03 · Dashboard');
+  await StatusBarLight(f);
+
+  // Topbar
+  R_(f,0,TOP,W,60,DS.surface);
+  await T_(f,'Bienvenido, Jake 👋',PAD,TOP+18,16,'Bold',DS.blueDark,W-100);
+  // Bell + badge
+  E_(f,W-54,TOP+30,18,18,DS.bg);
+  await T_(f,'🔔',W-64,TOP+20,15,'Regular',DS.textMuted,22);
+  E_(f,W-42,TOP+18,5,5,DS.red);
+  // Avatar
+  const av=figma.createEllipse(); av.resize(36,36); av.x=W-PAD-36; av.y=TOP+12;
+  av.fills=linGrad(DS.turquoise,DS.blueDark,135); av.strokes=solid(DS.white); av.strokeWeight=2;
+  f.appendChild(av);
+  await T_(f,'JS',W-PAD-24,TOP+22,11,'Bold',DS.white,20,'CENTER');
+
+  //  STAT CARDS (grid-4  2x2 en mvil)
+  const cW=(W-PAD*2-12)/2, sy=TOP+72;
+  const stats=[
+    {l:'Frec. cardíaca', v:'72 bpm', s:'↑ Normal',       iC:DS.turquoise, iBg:DS.turquoiseLight},
+    {l:'Medicamentos',   v:'2/4',    s:'50% completado',  iC:DS.blueMid,   iBg:DS.blueLight     },
+    {l:'Próxima cita',   v:'15 May', s:'Dr. Ramírez 9AM', iC:DS.green,     iBg:DS.greenLight    },
+    {l:'Pasos hoy',      v:'6,240',  s:'Meta: 10,000',    iC:DS.orange,    iBg:DS.orangeLight   },
+  ];
+  for(let i=0;i<4;i++){
+    const col=i%2, row=Math.floor(i/2);
+    await StatCard(f, PAD+col*(cW+12), sy+row*(84+12), cW, stats[i].iC,stats[i].iBg,stats[i].v,stats[i].l,stats[i].s);
+  }
+
+  //  CARD Medicamentos + Donut
+  const mY=sy+192;
+  const mCard=Card(f,PAD,mY,W-PAD*2,156,'','MedsCard');
+  await T_(mCard,'💊  Progreso de Medicamentos',14,14,12,'Bold',DS.blueDark,mCard.width-60);
+  DonutChart(mCard, 66,96, 50, DS.turquoise,DS.blueMid,false);
+  await T_(mCard,'50%',  50,84,18,'Bold',DS.blueDark,36,'CENTER');
+  await T_(mCard,'listo',46,106,9,'Regular',DS.textMuted,44,'CENTER');
+
+  // Med list en la card
+  const medsL=[{n:'Omeprazol 20mg', t:'8 PM',done:true},{n:'Metformina 500mg',t:'Tarde',done:false}];
+  for(let m=0;m<medsL.length;m++){
+    const my=44+m*48;
+    R_(mCard,142,my,mCard.width-156,36,DS.bg,RSM);
+    E_(mCard,155,my+18,5,5,m===0?DS.turquoise:DS.orange);
+    await T_(mCard,medsL[m].n,166,my+8,10,'Semi Bold',DS.text,mCard.width-175);
+    await T_(mCard,medsL[m].done?'✓ Tomado':'⏳ Pendiente',166,my+22,9,'Regular',medsL[m].done?DS.green:DS.red,90);
+  }
+  // + botn
+  const addBtn=R_(mCard,mCard.width-36,12,26,26,DS.blueDark,8);
+  await T_(mCard,'+',mCard.width-26,14,16,'Bold',DS.white,16,'CENTER');
+
+  //  CARD Actividad semanal
+  const aY=mY+168;
+  const aCard=Card(f,PAD,aY,W-PAD*2,108,'','ActivityCard');
+  await T_(aCard,'⚡  Actividad Semanal',14,14,12,'Bold',DS.blueDark,200);
+
+  const days=['L','M','M','J','V','S','D'], vals=[.6,.8,.5,.9,.7,.4,.85];
+  const bw=(aCard.width-28)/7-5, chartH=58;
+  for(let d=0;d<7;d++){
+    const bx=14+d*((aCard.width-28)/7);
+    const bh=Math.max(4,chartH*vals[d]), by=44+chartH-bh;
+    R_(aCard,bx,44,bw,chartH,DS.turquoiseLight,3);
+    const bar=R_(aCard,bx,by,bw,bh,DS.turquoise,3);
+    bar.fills=linGrad(DS.turquoise,DS.blueDark,90);
+    await T_(aCard,days[d],bx-1,104,9,'Regular',DS.textMuted,bw+4,'CENTER');
+  }
+
+  //  Tip banner
+  const tY=aY+120;
+  const tip=FG(f,PAD,tY,W-PAD*2,78,DS.blueDark,DS.blueMid,90,'HealthTip',R);
+  await T_(tip,'💡 Consejo del día',14,10,12,'Bold',DS.white,200);
+  await T_(tip,'Mantente activo · Meta: 10,000 pasos\nBebe al menos 2L de agua hoy.',14,30,11,'Regular',DS.white,tip.width-28,'LEFT',.9);
+
+  await BottomNav(f,'dashboard',false);
+}
+
+// 
+//  SCREEN 04  DASHBOARD + AURABOT ABIERTO
+//  (js/main.js  botWindow.open + botMessages + sug-chip)
+// 
+async function Screen_DashboardBot(xOff) {
+  const f = F_(null,xOff,0,W,H,DS.bg,'04 · Dashboard + AuraBot');
+  await StatusBarLight(f);
+
+  // Topbar y stat cards idnticos (simplificados)
+  R_(f,0,TOP,W,60,DS.surface);
+  await T_(f,'Bienvenido, Jake 👋',PAD,TOP+18,16,'Bold',DS.blueDark,W-100);
+  E_(f,W-42,TOP+18,5,5,DS.red);
+
+  const cW=(W-PAD*2-12)/2, sy=TOP+72;
+  const sColors=[DS.turquoiseLight,DS.blueLight,DS.greenLight,DS.orangeLight];
+  const sIcons =[DS.turquoise,DS.blueMid,DS.green,DS.orange];
+  const sVals  =['72 bpm','2/4','15 May','6,240'];
+  const sLabs  =['Freq. Cardíaca','Medicamentos','Próxima cita','Pasos hoy'];
+  for(let i=0;i<4;i++){
+    const col=i%2, row=Math.floor(i/2);
+    await StatCard(f,PAD+col*(cW+12),sy+row*(84+12),cW,sIcons[i],sColors[i],sVals[i],sLabs[i],'');
+  }
+
+  // Fondo oscurecido overlay (botWindow se muestra encima)
+  R_(f,0,0,W,H,DS.black,.32);
+
+  //  AURABOT WINDOW  (.aurabot-window.open)
+  // Posicin: bottom 100px right 16px  top = H-100-480=264, x=16
+  const bW=W-32, bH=462;
+  const bX=16, bY=H-100-bH;
+  const bot=Card(f,bX,bY,bW,bH,false,'AuraBotWindow');
+  bot.cornerRadius=R;
+
+  // Header (.bot-header con gradient)
+  const botHead=FG(bot,0,0,bW,54,DS.blueDark,DS.turquoise,90,'BotHeader',R);
+  // dot verde animado (.bot-dot)
+  E_(botHead,18,27,5,5,{r:0.30,g:1,b:0.57});
+  await T_(botHead,'AuraBot',30,18,14,'Bold',DS.white,bW-70);
+  await T_(botHead,'✕',bW-28,16,18,'Regular',DS.white,22,'CENTER',.8);
+
+  // Mensajes (.bot-messages)
+  const msgArea=F_(bot,0,54,bW,bH-140,DS.bg,'BotMessages');
+  // Mensaje inicial del bot (.msg.bot)
+  const m1=R_(msgArea,12,12,bW-24-60,0,DS.turquoiseLight,14);
+  m1.resize(bW-24-60,48);
+  await T_(msgArea,BOT_INIT,20,20,11,'Regular',DS.text,bW-84);
+
+  // Mensaje usuario (.msg.user  alineado a la derecha, bg blue-dark)
+  const m2=R_(msgArea,60,76,bW-80,36,DS.blueDark,14);
+  await T_(msgArea,BOT_USER_MSG,68,84,11,'Regular',DS.white,bW-90);
+
+  // Respuesta bot
+  const m3=R_(msgArea,12,128,bW-80,48,DS.turquoiseLight,14);
+  await T_(msgArea,BOT_REPLY,20,136,11,'Regular',DS.text,bW-96);
+
+  // Chips de sugerencias (.bot-suggestions)
+  const chipArea=F_(bot,0,bH-86,bW,46,DS.surface,'BotChips');
+  R_(chipArea,0,0,bW,1,DS.border);
+  let cx=10;
+  for(const ch of BOT_CHIPS){
+    const cw=ch.length*7+20;
+    R_(chipArea,cx,8,cw,28,noFill(),14);
+    // stroke turquoise (.sug-chip border: 1px solid turquoise)
+    const chipRect=figma.createRectangle();
+    chipRect.x=cx; chipRect.y=8; chipRect.resize(cw,28);
+    chipRect.fills=[]; chipRect.strokes=solid(DS.turquoise); chipRect.strokeWeight=1; chipRect.cornerRadius=14;
+    chipArea.appendChild(chipRect);
+    await T_(chipArea,ch,cx+8,14,9,'Regular',DS.turquoise,cw-10);
+    cx+=cw+8;
+  }
+
+  // Input row (.bot-input-row)
+  const inputRow=F_(bot,0,bH-40,bW,40,DS.surface,'BotInput');
+  R_(inputRow,0,0,bW,1,DS.border);
+  const bInput=R_(inputRow,10,6,bW-60,28,DS.bg,22);
+  bInput.strokes=solid(DS.border); bInput.strokeWeight=1.5;
+  await T_(inputRow,'Escribe tu consulta...',24,12,11,'Regular',DS.textMuted,bW-70);
+  E_(inputRow,bW-22,20,16,16,DS.blueDark);
+  await T_(inputRow,'→',bW-30,12,14,'Bold',DS.white,18,'CENTER');
+
+  // FAB debajo de la ventana (posicin mobile)
+  const fab=figma.createEllipse(); fab.resize(52,52);
+  fab.x=W-16-52; fab.y=H-100-8;
+  fab.fills=linGrad(DS.turquoise,DS.blueDark,135); fab.strokeWeight=0;
+  f.appendChild(fab);
+  await T_(f,'💬',W-16-40,H-100+4,18,'Regular',DS.white,24);
+
+  await BottomNav(f,'dashboard',false);
+}
+
+// 
+//  SCREEN 05  RECORDATORIOS (mayo 2026  datos exactos del JS)
+// 
+async function Screen_Recordatorios(xOff) {
+  const f = F_(null,xOff,0,W,H,DS.bg,'05 · Recordatorios');
+  await StatusBarLight(f);
+
+  // Topbar degradado
+  const topbar=FG(f,0,TOP,W,70,DS.blueDark,DS.turquoise,90,'Topbar');
+  await T_(topbar,'Recordatorios',PAD,16,17,'Bold',DS.white,W-100);
+  await T_(topbar,'🔔 Gestiona tus citas y medicamentos',PAD,40,10,'Regular',DS.white,W-40,'LEFT',.8);
+  // Botn +
+  E_(topbar,W-PAD-20,35,20,20,DS.white,.15);
+  await T_(topbar,'+',W-PAD-28,19,22,'Bold',DS.white,22);
+
+  //  Calendario Mayo 2026 (.calendar-wrap  bg blueDark)
+  const calY=TOP+82;
+  const cal=F_(f,PAD,calY,W-PAD*2,168,DS.blueDark,'Calendar',R);
+
+  // Cal header
+  await T_(cal,'‹',12,14,18,'Bold',DS.white,20);
+  await T_(cal,'Mayo, 2026',0,16,14,'Bold',DS.white,cal.width,'CENTER');
+  await T_(cal,'›',cal.width-28,14,18,'Bold',DS.white,20);
+
+  // Day labels
+  const dlabels=['L','M','M','J','V','S','D'];
+  const cellW=Math.floor((cal.width-28)/7);
+  for(let d=0;d<7;d++) await T_(cal,dlabels[d],14+d*cellW,38,9,'Semi Bold',DS.white,cellW,'CENTER',.6);
+
+  // Days grid (Mayo 2026: starts on Friday = offset 4)
+  const offset=4; // viernes=4 (lunes-base)
+  let dayNum=1;
+  for(let row=0;row<5;row++){
+    for(let col=0;col<7;col++){
+      const idx=row*7+col;
+      if(idx<offset||dayNum>31){col===6&&dayNum++;continue;}
+      const dx=14+col*cellW, dy=54+row*20;
+      const isToday=dayNum===10; // day 10 = primer evento visible
+      const hasEvent=CALENDAR_EVENT_DAYS.has(dayNum);
+
+      if(isToday){
+        // .cal-day.today  bg turquoise
+        R_(cal,dx,dy,cellW-2,18,DS.turquoise,9);
+        await T_(cal,String(dayNum),dx-1,dy+2,11,'Bold',DS.white,cellW,'CENTER');
+      } else {
+        await T_(cal,String(dayNum),dx-1,dy+2,11,'Regular',DS.white,cellW,'CENTER');
+        // .cal-day.has-event  dot blanco debajo
+        if(hasEvent) E_(cal,dx+cellW/2-1,dy+16,2.5,2.5,DS.white);
+      }
+      dayNum++;
+    }
+  }
+
+  //  Donut de progreso
+  const dY=calY+180;
+  const dCard=Card(f,PAD,dY,W-PAD*2,100,'','DonutCard');
+  DonutChart(dCard,52,50,40,DS.turquoise,DS.blueMid);
+  await T_(dCard,'40%',36,38,18,'Bold',DS.blueDark,38,'CENTER');
+  await T_(dCard,'completado',27,60,9,'Regular',DS.textMuted,52,'CENTER');
+  await T_(dCard,'2/5 recordatorios completados',114,30,13,'Semi Bold',DS.text,dCard.width-130);
+  await T_(dCard,'3 pendientes para este mes',114,50,11,'Regular',DS.textMuted,dCard.width-130);
+
+  //  Lista de recordatorios (datos exactos recordatorios.js)
+  const listY=dY+112;
+  await T_(f,'Todos los eventos – Mayo 2026',PAD,listY,13,'Bold',DS.blueDark,W-PAD*2);
+
+  const tagMap={
+    medical:  {label:'Médico',    c:DS.blueMid,  bg:DS.blueLight   },
+    medicine: {label:'Pastillas', c:DS.green,    bg:DS.greenLight  },
+    exam:     {label:'Examen',    c:DS.orange,   bg:DS.orangeLight },
+    vaccine:  {label:'Vacuna',    c:DS.purple,   bg:DS.purpleLight },
+  };
+
+  let ry=listY+22;
+  for(const rem of RECORDATORIOS){
+    const tag=tagMap[rem.type];
+    const timeLabel=`${rem.date} · ${rem.time}`;
+    await ReminderItem(f,PAD,ry,W-PAD*2, rem.name,timeLabel,tag.label,tag.c,tag.bg,rem.done,false);
+    ry+=80; // 68px item + 12px gap
+  }
+
+  await BottomNav(f,'recordatorios',false);
+}
+
+// 
+//  SCREEN 06  RECOMENDACIONES
+// 
+async function Screen_Recomendaciones(xOff) {
+  const f = F_(null,xOff,0,W,H,DS.bg,'06 · Recomendaciones');
+  await StatusBarLight(f);
+
+  const topbar=FG(f,0,TOP,W,70,DS.blueDark,DS.turquoise,90,'Topbar');
+  await T_(topbar,'Recomendaciones',PAD,16,17,'Bold',DS.white,W-40);
+  await T_(topbar,'★ Artículos y consejos para ti',PAD,40,10,'Regular',DS.white,W-40,'LEFT',.8);
+
+  // Health tip banner
+  const tY=TOP+82;
+  const tip=FG(f,PAD,tY,W-PAD*2,92,DS.blueDark,DS.blueMid,90,'TipBanner',R);
+  await T_(tip,'💡 Consejos para hoy',14,10,12,'Bold',DS.white,tip.width-28);
+  const tipItems=['• Mantente activo, sal a correr','• Evita el consumo de alcohol','• Realízate un examen médico ocular','• Llega a tus metas de macronutrientes'];
+  for(let t=0;t<tipItems.length;t++) await T_(tip,tipItems[t],14,28+t*16,10,'Regular',DS.white,tip.width-28,'LEFT',.9);
+  await T_(tip,'Ver artículos →',tip.width-110,72,10,'Semi Bold',DS.white,100,'RIGHT');
+
+  // Category tabs
+  const tabY=tY+104;
+  const cats=['Todos','Nutrición','Ejercicio','Mental','Prevención'];
+  let tx=PAD;
+  for(let c=0;c<cats.length;c++){
+    const isAct=c===0;
+    const tw=cats[c].length*7+22;
+    if(isAct){ R_(f,tx,tabY,tw,30,DS.blueDark,15); }
+    else      { const r=R_(f,tx,tabY,tw,30,DS.surface,15); r.strokes=solid(DS.border); r.strokeWeight=1; }
+    await T_(f,cats[c],tx+4,tabY+8,10,isAct?'Semi Bold':'Regular',isAct?DS.white:DS.textMuted,tw-4,'CENTER');
+    tx+=tw+8;
+  }
+
+  // Rec cards grid (2 cols  2 rows)
+  const gridY=tabY+42;
+  const rW=(W-PAD*2-12)/2;
+  const recs=[
+    {tag:'Nutrición', tC:DS.green,  tBg:DS.greenLight,  title:'5 alimentos que cuidan tu corazón',   icon:'🥦'},
+    {tag:'Ejercicio', tC:DS.orange, tBg:DS.orangeLight, title:'Rutina matutina de 15 min en casa',   icon:'🏃'},
+    {tag:'Prevención',tC:DS.blueMid,tBg:DS.blueLight,   title:'Chequeos médicos que no debes ignorar',icon:'🩺'},
+    {tag:'Mental',    tC:DS.purple, tBg:DS.purpleLight,  title:'Mindfulness para reducir el estrés', icon:'🧘'},
+  ];
+  for(let i=0;i<4;i++){
+    const col=i%2, row=Math.floor(i/2);
+    const rx=PAD+col*(rW+12), ry2=gridY+row*(148+12);
+    const c=Card(f,rx,ry2,rW,148,false,'RecCard');
+    // Image placeholder
+    RG(c,0,0,rW,66,DS.turquoiseLight,DS.border,90,0);
+    await T_(c,recs[i].icon,rW/2-10,22,26,'Regular',DS.turquoise,24);
+    R_(c,12,72,62,20,recs[i].tBg,10);
+    await T_(c,recs[i].tag,16,75,9,'Bold',recs[i].tC,58);
+    await T_(c,recs[i].title,12,96,11,'Semi Bold',DS.text,rW-24);
+  }
+
+  await BottomNav(f,'recomendaciones',false);
+}
+
+// 
+//  SCREEN 07  PERFIL
+// 
+async function Screen_Perfil(xOff) {
+  const f = F_(null,xOff,0,W,H,DS.bg,'07 · Perfil');
+  await StatusBar(f,false);
+
+  // Hero (.profile-hero  gradient)
+  const hero=FG(f,0,TOP,W,174,DS.blueDark,DS.turquoise,135,'ProfileHero');
+  await T_(hero,'Mi Perfil',PAD,14,16,'Bold',DS.white,W-40);
+
+  // Avatar grande (.profile-avatar-lg)
+  E_(hero,W/2,108,44,44,DS.white,.22);
+  const avRing=figma.createEllipse(); avRing.resize(88,88); avRing.x=W/2-44; avRing.y=44;
+  avRing.fills=[]; avRing.strokes=solid(DS.white,.5); avRing.strokeWeight=3;
+  hero.appendChild(avRing);
+  await T_(hero,'JS',W/2-12,76,20,'Bold',DS.white,30,'CENTER');
+
+  await T_(hero,'Jake Salazar',PAD,136,15,'Bold',DS.white,W-PAD*2,'CENTER');
+  await T_(hero,'29 años · Lima, Perú',PAD,156,11,'Regular',DS.white,W-PAD*2,'CENTER',.85);
+
+  // Stats row (.profile-stats)
+  const pStats=[{v:'12',l:'Citas'},{v:'87%',l:'Adherencia'},{v:'8',l:'Semanas'}];
+  const sRow=Card(f,PAD,TOP+174,W-PAD*2,62,false,'ProfileStats');
+  const sw=(W-PAD*2)/3;
+  for(let i=0;i<3;i++){
+    if(i>0) R_(sRow,i*sw,10,1,42,DS.border);
+    await T_(sRow,pStats[i].v,i*sw,8,18,'Bold',DS.blueDark,sw,'CENTER');
+    await T_(sRow,pStats[i].l,i*sw,30,10,'Regular',DS.textMuted,sw,'CENTER');
+  }
+
+  // Info card
+  const infoY=TOP+248;
+  const info=Card(f,PAD,infoY,W-PAD*2,202,false,'InfoCard');
+  await T_(info,'Información Personal',14,14,12,'Bold',DS.blueDark,info.width-28);
+  const fields=[
+    {l:'Nombre',   v:'Jake Salazar'       },
+    {l:'Email',    v:'jake@email.com'     },
+    {l:'Teléfono', v:'+51 987 654 321'   },
+    {l:'Tipo sangre', v:'O+'             },
+  ];
+  for(let i=0;i<fields.length;i++){
+    const fy=40+i*40;
+    const inp=R_(info,14,fy,info.width-28,34,DS.bg,RSM);
+    inp.strokes=solid(DS.border); inp.strokeWeight=1;
+    await T_(info,fields[i].l,26,fy+4,10,'Regular',DS.textMuted,70);
+    await T_(info,fields[i].v,26,fy+18,12,'Semi Bold',DS.text,info.width-42);
+  }
+
+  // Actions
+  const bY=infoY+214;
+  RG(f,PAD,bY,W-PAD*2,48,DS.blueDark,DS.turquoise,90,R);
+  await T_(f,'Editar perfil',PAD,bY+14,13,'Semi Bold',DS.white,W-PAD*2,'CENTER');
+
+  const logBtn=R_(f,PAD,bY+60,W-PAD*2,48,DS.bg,R);
+  logBtn.strokes=solid(DS.red); logBtn.strokeWeight=1;
+  await T_(f,'Cerrar sesión',PAD,bY+74,13,'Semi Bold',DS.red,W-PAD*2,'CENTER');
+
+  await BottomNav(f,'perfil',false);
+}
+
+// 
+//  HELPER PARTNER  (reutilizable para Ana y Carlos)
+// 
+async function buildPartner(xOff, screenName, p) {
+  const f = F_(null,xOff,0,W,H,DS.bg,screenName);
+  await StatusBarLight(f);
+
+  const topbar=FG(f,0,TOP,W,70,DS.blueDark,DS.turquoise,90,'Topbar');
+  await T_(topbar,'Mi Partner',PAD,16,17,'Bold',DS.white,W-100);
+  await T_(topbar,'⇌ Salud compartida en tiempo real',PAD,40,10,'Regular',DS.white,W-40,'LEFT',.8);
+
+  // Partner hero card
+  const pCard=FG(f,PAD,TOP+82,W-PAD*2,108,DS.blueDark,DS.blueMid,135,'PartnerHero',R);
+
+  // Avatar
+  const pavG=figma.createEllipse(); pavG.resize(64,64); pavG.x=14; pavG.y=22;
+  pavG.fills=solid(DS.white,.2); pavG.strokes=solid(DS.white,.5); pavG.strokeWeight=2;
+  pCard.appendChild(pavG);
+  await T_(pCard,p.initials,14+20,22+22,15,'Bold',DS.white,24,'CENTER');
+
+  await T_(pCard,p.name,90,16,15,'Bold',DS.white,pCard.width-104);
+  await T_(pCard,p.lastSeen,90,36,11,'Regular',DS.white,pCard.width-104,'LEFT',.8);
+
+  // Status dot + texto
+  E_(pCard,92,62,5,5,{r:0.30,g:1,b:0.57});
+  await T_(pCard,'En línea',104,55,10,'Regular',DS.white,80,'LEFT',.8);
+
+  // Botn recordatorio
+  const remBtn=R_(pCard,pCard.width-96,38,80,32,DS.white,.15,1,null,0);
+  remBtn.cornerRadius=10;
+  await T_(pCard,'📣 Recordar',pCard.width-92,47,9,'Semi Bold',DS.white,76,'CENTER');
+
+  //  Stats calculados (igual que renderPartnerDashboard en partner.js)
+  const totalMeds=p.meds.length, doneMeds=p.meds.filter(m=>m.done).length;
+  const medPct=Math.round(doneMeds/totalMeds*100);
+  const actVals=p.activity, actAvg=Math.round(actVals.reduce((s,a)=>s+Math.min(100,(a.curr/a.goal)*100),0)/actVals.length);
+  const pendRem=p.reminders.filter(r=>!r.done).length;
+
+  const statsY=TOP+202;
+  const sw3=(W-PAD*2-20)/3;
+  const st3=[
+    {v:`${doneMeds}/${totalMeds}`, s:`${medPct}% tomados`,    c:DS.green},
+    {v:`${actAvg}%`,               s:actAvg>=80?'¡Excelente!':actAvg>=50?'Buen progreso':'Necesita ayuda', c:DS.turquoise},
+    {v:String(pendRem),            s:`pendiente${pendRem!==1?'s':''}`,   c:DS.orange},
+  ];
+  for(let i=0;i<3;i++){
+    const sc=Card(f,PAD+i*(sw3+10),statsY,sw3,68,false,'Stat3');
+    await T_(sc,st3[i].v,0,10,20,'Bold',st3[i].c,sw3,'CENTER');
+    await T_(sc,st3[i].s,0,34,9,'Regular',DS.textMuted,sw3,'CENTER');
+  }
+
+  //  Donuts y progreso de medicamentos
+  const medsY=statsY+80;
+  const mCard=Card(f,PAD,medsY,W-PAD*2,156,false,'MedsPartner');
+  await T_(mCard,'💊  Medicamentos de '+p.name.split(' ')[0],14,14,12,'Bold',DS.blueDark,mCard.width-28);
+  DonutChart(mCard,62,96,medPct,DS.turquoise,DS.blueMid,false);
+  await T_(mCard,medPct+'%',46,84,16,'Bold',DS.blueDark,36,'CENTER');
+
+  const MED_COLORS=[DS.turquoise,DS.blueDark,DS.green,DS.orange,DS.purple];
+  for(let m=0;m<p.meds.length;m++){
+    const med=p.meds[m], my=40+m*38;
+    R_(mCard,134,my,mCard.width-148,32,DS.bg,RSM);
+    E_(mCard,146,my+16,5,5,MED_COLORS[m%5]);
+    await T_(mCard,med.name,158,my+6,10,'Semi Bold',DS.text,mCard.width-168);
+    await T_(mCard,med.freq+'  '+( med.done?'✓ Tomado':'⏳ Pendiente'),158,my+20,9,'Regular',med.done?DS.green:DS.red,mCard.width-168);
+  }
+
+  //  Actividad con barras de progreso (.progress-fill = gradient turquoiseblueMid)
+  const actY=medsY+168;
+  const aCard=Card(f,PAD,actY,W-PAD*2,p.activity.length*36+28,false,'ActivityPartner');
+  await T_(aCard,'⚡  Actividad de '+p.name.split(' ')[0],14,14,12,'Bold',DS.blueDark,aCard.width-28);
+
+  for(let a=0;a<p.activity.length;a++){
+    const act=p.activity[a];
+    const pct2=Math.min(100,Math.round(act.curr/act.goal*100));
+    const col2=pct2>=80?DS.green:pct2>=50?DS.turquoise:DS.orange;
+    const bY=36+a*36;
+    await ProgressBar(aCard,14,bY,aCard.width-28,act.label,act.curr,act.goal,act.unit,col2,false);
+  }
+
+  //  Recordatorios del partner
+  const remY=actY+p.activity.length*36+40;
+  await T_(f,'Recordatorios de '+p.name.split(' ')[0],PAD,remY,12,'Bold',DS.blueDark,W-PAD*2);
+  const tagMap2={
+    medical: {label:'Médico', c:DS.blueMid, bg:DS.blueLight},
+    med2:    {label:'Pastillas',c:DS.green, bg:DS.greenLight},
+  };
+  for(let r=0;r<p.reminders.length;r++){
+    const rem=p.reminders[r];
+    await ReminderItem(f,PAD,remY+20+r*78,W-PAD*2,rem.name,rem.time,rem.done?'✓ Cumplido':'⏳ Pendiente',rem.done?DS.green:DS.orange,rem.done?DS.greenLight:DS.orangeLight,rem.done,false);
+  }
+
+  await BottomNav(f,'partner',false);
+}
+
+// 
+//  SCREEN 08  PARTNER  ANA GARCA
+//  SCREEN 09  PARTNER  CARLOS LPEZ
+// 
+async function Screen_PartnerAna(xOff)    { await buildPartner(xOff,'08 · Partner – Ana García',   PARTNERS.ana); }
+async function Screen_PartnerCarlos(xOff) { await buildPartner(xOff,'09 · Partner – Carlos López', PARTNERS.carlos); }
+
+// 
+//  SCREEN 10  MODALES ACTIVOS
+//  Muestra: modal medModal + modal actModal sobre dashboard
+// 
+async function Screen_Modals(xOff) {
+  const f = F_(null,xOff,0,W,H,DS.bg,'10 · Modales activos');
+  await StatusBarLight(f);
+
+  // Dashboard difuminado de fondo
+  R_(f,0,TOP,W,60,DS.surface);
+  await T_(f,'Bienvenido, Jake 👋',PAD,TOP+18,16,'Bold',DS.blueDark,W-100);
+  const cW=(W-PAD*2-12)/2;
+  const bgColors=[DS.turquoiseLight,DS.blueLight,DS.greenLight,DS.orangeLight];
+  for(let i=0;i<4;i++){
+    const col=i%2, row=Math.floor(i/2);
+    R_(f,PAD+col*(cW+12),TOP+74+row*92,cW,80,bgColors[i],R,.4);
+  }
+
+  //  OVERLAY oscuro (.modal-overlay)
+  R_(f,0,0,W,H,DS.black,.45);
+
+  //  MODAL: Agregar Medicamento  (.modal con max-width 420px)
+  // En mvil, centrado: x=20, ancho=350
+  const mX=20, mW=W-40, mY=120;
+  const modal=Card(f,mX,mY,mW,330,false,'Modal_MedModal');
+  modal.cornerRadius=R;
+
+  // .modal-header
+  await T_(modal,'Agregar Medicamento',16,20,15,'Bold',DS.blueDark,mW-70);
+  // .modal-close button
+  await T_(modal,'✕',mW-36,18,16,'Regular',DS.textMuted,22,'CENTER');
+  R_(modal,16,50,mW-32,1,DS.border);
+
+  // Formulario (medForm: mName, mDose, mFreq)
+  await InputField(modal,16,62,mW-32,'Ej: Metformina','Nombre del medicamento',false);
+  await InputField(modal,16,134,mW-32,'Ej: 500mg','Dosis',false);
+  await InputField(modal,16,206,mW-32,'Ej: 2 veces al día','Frecuencia',false);
+
+  // .modal-actions
+  R_(modal,16,266,mW-32,1,DS.border);
+  const cBtn=R_(modal,16,276,mW/2-24,44,DS.bg,RSM);
+  cBtn.strokes=solid(DS.blueDark); cBtn.strokeWeight=2;
+  await T_(modal,'Cancelar',16,292,12,'Semi Bold',DS.blueDark,mW/2-24,'CENTER');
+  RG(modal,mW/2,276,mW/2-16,44,DS.blueDark,DS.turquoise,90,RSM);
+  await T_(modal,'Guardar',mW/2,292,12,'Semi Bold',DS.white,mW/2-16,'CENTER');
+
+  //  Segundo modal flotando al costado (actModal  Editar Actividad)
+  // Lo mostramos como un panel inferior tipo sheet
+  const actModal=Card(f,0,H-316,W,316,false,'Modal_ActModal');
+  actModal.cornerRadius=0;
+  // Handle bar (iOS style)
+  R_(actModal,W/2-24,10,48,4,DS.border,2);
+
+  await T_(actModal,'Editar Actividad',PAD,24,14,'Bold',DS.blueDark,W-60);
+  await T_(actModal,'✕',W-PAD-22,22,16,'Regular',DS.textMuted,22,'CENTER');
+  R_(actModal,0,48,W,1,DS.border);
+
+  // actKey (hidden), actCurr, actGoal
+  await InputField(actModal,PAD,58,W-PAD*2,'Ej: 7500','Valor actual (pasos)',false);
+  await InputField(actModal,PAD,132,W-PAD*2,'Ej: 10000','Meta diaria',false);
+
+  // Preview de la progress bar
+  await T_(actModal,'Vista previa',PAD,208,11,'Semi Bold',DS.textMuted,W-PAD*2);
+  R_(actModal,PAD,226,W-PAD*2,8,DS.turquoiseLight,4);
+  const fillMod=R_(actModal,PAD,226,Math.round((W-PAD*2)*0.75),8,null,4);
+  fillMod.fills=linGrad(DS.turquoise,DS.blueMid,90);
+  await T_(actModal,'75%',W-PAD-30,228,10,'Semi Bold',DS.turquoise,30,'RIGHT');
+
+  // Acciones
+  R_(actModal,0,248,W,1,DS.border);
+  const cBtn2=R_(actModal,PAD,258,((W-PAD*2)-12)/2,44,DS.bg,RSM);
+  cBtn2.strokes=solid(DS.border); cBtn2.strokeWeight=1;
+  await T_(actModal,'Cancelar',PAD,274,12,'Semi Bold',DS.text,((W-PAD*2)-12)/2,'CENTER');
+  RG(actModal,PAD+((W-PAD*2)-12)/2+12,258,((W-PAD*2)-12)/2,44,DS.blueDark,DS.turquoise,90,RSM);
+  await T_(actModal,'Actualizar',PAD+((W-PAD*2)-12)/2+12,274,12,'Semi Bold',DS.white,((W-PAD*2)-12)/2,'CENTER');
+
+  await BottomNav(f,'dashboard',false);
+}
+
+// 
+//  MAIN
+// 
+async function main() {
+  // Cargar Inter (siempre disponible en Figma)
+  for(const style of ['Regular','Semi Bold','Bold']){
+    await figma.loadFontAsync({family:'Inter', style});
+  }
+
+  const screens = [
+    { name:'00 Onboarding',       fn: Screen_Onboarding       },
+    { name:'01 Login',            fn: Screen_Login            },
+    { name:'02 Register',         fn: Screen_Register         },
+    { name:'03 Dashboard',        fn: Screen_Dashboard        },
+    { name:'04 Dashboard+Bot',    fn: Screen_DashboardBot     },
+    { name:'05 Recordatorios',    fn: Screen_Recordatorios    },
+    { name:'06 Recomendaciones',  fn: Screen_Recomendaciones  },
+    { name:'07 Perfil',           fn: Screen_Perfil           },
+    { name:'08 Partner Ana',      fn: Screen_PartnerAna       },
+    { name:'09 Partner Carlos',   fn: Screen_PartnerCarlos    },
+    { name:'10 Modales',          fn: Screen_Modals           },
+  ];
+
+  for(let i=0;i<screens.length;i++){
+    const xOff = i*(W+GAP);
+    try {
+      await screens[i].fn(xOff);
+    } catch(e) {
+      console.error(`Error en pantalla "${screens[i].name}":`, e);
+      // Frame de error para no interrumpir el resto
+      const errF=F_(null,xOff,0,W,H,DS.red,`❌ ${screens[i].name}`,R);
+      await T_(errF,`Error: ${e.message}`,PAD,H/2-20,12,'Regular',DS.white,W-PAD*2);
+    }
+  }
+
+  figma.viewport.scrollAndZoomIntoView(figma.currentPage.children);
+  figma.notify('✅ AuraHealth v2 · 11 pantallas generadas con datos del repositorio 🎉',{timeout:5000});
+}
+
+main().catch(err=>{
+  figma.notify('❌ Error fatal: '+err.message,{error:true});
+  console.error(err);
+});
