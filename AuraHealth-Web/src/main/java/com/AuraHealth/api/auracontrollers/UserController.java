@@ -73,6 +73,23 @@ public class UserController {
         return ResponseEntity.ok(userService.obtenerUsuarioPorId(id));
     }
 
+    // ── HU05 — Actualizar perfil de salud ─────────────────────────────────────
+
+    @Operation(summary = "HU05 — Actualizar perfil de salud (IMC centralizado en backend)",
+               description = "El backend calcula BMI = peso/(altura²) según OMS. El frontend nunca recalcula.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Perfil actualizado. Incluye bmi y bmiCategory."),
+        @ApiResponse(responseCode = "400", description = "Valores fuera de rango fisiológico."),
+        @ApiResponse(responseCode = "404", description = "Usuario no encontrado.")
+    })
+    @PutMapping("/users/{userId}/health-profile")
+    public ResponseEntity<HealthProfileResponseDTO> updateHealthProfile(
+            @Parameter(description = "ID del usuario", example = "1", required = true)
+            @PathVariable Long userId,
+            @RequestBody HealthProfileRequestDTO dto) {
+        return ResponseEntity.ok(userService.actualizarPerfilDeSalud(userId, dto));
+    }
+
 
     // ── HU06 — Cambiar idioma ─────────────────────────────────────────────────
 
