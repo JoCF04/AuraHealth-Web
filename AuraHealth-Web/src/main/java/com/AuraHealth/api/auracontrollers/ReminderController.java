@@ -1,4 +1,4 @@
-package com.aurahealth.api.auracontrollers;
+package com.AuraHealth.api.auracontrollers;
 
 import com.aurahealth.api.auradtos.*;
 import com.aurahealth.api.auraservices.ReminderService;
@@ -66,6 +66,12 @@ public class ReminderController {
         return ResponseEntity.ok(reminderService.listarVencidos(userId));
     }
 
+    @Operation(summary = "HU11 — Obtener detalle de un recordatorio")
+    @GetMapping("/users/{userId}/reminders/{id}")
+    public ResponseEntity<ReminderResponseDTO> getReminder(
+            @PathVariable Long userId, @PathVariable Long id) {
+        return ResponseEntity.ok(reminderService.obtenerRecordatorioPorId(userId, id));
+    }
 
     @Operation(summary = "HU12 — Actualizar recordatorio")
     @PutMapping("/users/{userId}/reminders/{id}")

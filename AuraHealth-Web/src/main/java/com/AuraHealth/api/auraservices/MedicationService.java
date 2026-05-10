@@ -1,4 +1,4 @@
-package com.aurahealth.api.auraservices;
+package com.AuraHealth.api.auraservices;
 
 import com.aurahealth.api.auraentities.Medication;
 import com.aurahealth.api.auraentities.User;
@@ -71,6 +71,14 @@ public class MedicationService {
         medicationRepository.delete(requireMedication(userId, id));
     }
 
+    // ── HU09 — Toggle diario ─────────────────────────────────────────────────
+
+    @Transactional
+    public MedicationResponseDTO toggleCompletadoHoy(Long userId, Long id) {
+        Medication m = requireMedication(userId, id);
+        m.setIsCompletedToday(!Boolean.TRUE.equals(m.getIsCompletedToday()));
+        return toDto(medicationRepository.save(m));
+    }
 
     // ── HU46 — Toggle privacidad con Partner ─────────────────────────────────
 
