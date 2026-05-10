@@ -51,4 +51,43 @@ public class UserController {
         return ResponseEntity.ok(userService.loginUsuario(dto));
     }
 
+    // ── HU03 — Logout ─────────────────────────────────────────────────────────
+
+    @Operation(summary = "HU03 — Cerrar sesión")
+    @PostMapping("/users/logout")
+    public ResponseEntity<Void> logout() {
+        return ResponseEntity.noContent().build();
+    }
+
+    // ── HU04 — Ver perfil ─────────────────────────────────────────────────────
+
+    @Operation(summary = "HU04 — Obtener perfil completo del usuario")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Perfil obtenido."),
+        @ApiResponse(responseCode = "404", description = "Usuario no encontrado.")
+    })
+    @GetMapping("/users/{id}")
+    public ResponseEntity<UserResponseDTO> getUser(
+            @Parameter(description = "ID del usuario", example = "1", required = true)
+            @PathVariable Long id) {
+        return ResponseEntity.ok(userService.obtenerUsuarioPorId(id));
+    }
+
+
+    // ── HU06 — Cambiar idioma ─────────────────────────────────────────────────
+
+    @Operation(summary = "HU06 — Actualizar idioma preferido (es | en)")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Idioma actualizado."),
+        @ApiResponse(responseCode = "400", description = "Código de idioma inválido."),
+        @ApiResponse(responseCode = "404", description = "Usuario no encontrado.")
+    })
+    @PatchMapping("/users/{id}/language")
+    public ResponseEntity<UserResponseDTO> updateLanguage(
+            @Parameter(description = "ID del usuario", example = "1", required = true)
+            @PathVariable Long id,
+            @Parameter(description = "Código ISO 639-1: es | en", example = "en", required = true)
+            @RequestParam String lang) {
+        return ResponseEntity.ok(userService.cambiarIdioma(id, lang));
+    }
 }
