@@ -1,4 +1,4 @@
-package com.aurahealth.api.auraservices;
+package com.AuraHealth.api.auraservices;
 
 import com.aurahealth.api.auraentities.Appointment;
 import com.aurahealth.api.auraentities.Reminder;
@@ -66,6 +66,14 @@ public class ReminderService {
         return toReminderDto(requireReminder(userId, id));
     }
 
+    @Transactional(readOnly = true)
+    public List<ReminderResponseDTO> listarPendientes(Long userId) {
+        requireUserExists(userId);
+        return reminderRepository
+            .findByUserIdAndIsDoneFalseAndScheduledDateGreaterThanEqualOrderByScheduledDateAsc(
+                userId, LocalDate.now())
+            .stream().map(this::toReminderDto).collect(Collectors.toList());
+    }
 
     @Transactional(readOnly = true)
     public List<ReminderResponseDTO> listarVencidos(Long userId) {

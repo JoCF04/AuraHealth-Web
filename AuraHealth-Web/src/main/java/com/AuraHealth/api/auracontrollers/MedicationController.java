@@ -1,4 +1,4 @@
-package com.aurahealth.api.auracontrollers;
+package com.AuraHealth.api.auracontrollers;
 
 import com.aurahealth.api.auradtos.MedicationRequestDTO;
 import com.aurahealth.api.auradtos.MedicationResponseDTO;
@@ -89,6 +89,16 @@ public class MedicationController {
         return ResponseEntity.noContent().build();
     }
 
+    // ── HU09 — Toggle diario ─────────────────────────────────────────────────
+
+    @Operation(summary = "HU09 — Marcar/desmarcar toma de hoy (toggle)",
+               description = "Idempotente: primera llamada true→false, segunda false→true.")
+    @ApiResponse(responseCode = "200", description = "Estado actualizado.")
+    @PatchMapping("/users/{userId}/medications/{id}/toggle-today")
+    public ResponseEntity<MedicationResponseDTO> toggleTodayCheckbox(
+            @PathVariable Long userId, @PathVariable Long id) {
+        return ResponseEntity.ok(medicationService.toggleCompletadoHoy(userId, id));
+    }
 
     // ── HU46 — Toggle privacidad ──────────────────────────────────────────────
 
