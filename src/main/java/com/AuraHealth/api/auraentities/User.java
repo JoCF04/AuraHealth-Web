@@ -45,6 +45,9 @@ public class User {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "role", nullable = false, length = 20)
+    private String role = "ROLE_USER";
+
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToMany(fetch = FetchType.EAGER)
@@ -65,5 +68,6 @@ public class User {
         createdAt = LocalDateTime.now();
         if (isEmailVerified == null) isEmailVerified = false;
         if (preferredLanguage == null) preferredLanguage = "es";
+        if (role == null) role = "ROLE_USER";
     }
 }

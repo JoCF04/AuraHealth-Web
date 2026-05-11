@@ -15,6 +15,7 @@ import java.util.List;
 @RequestMapping("/api/v1/resources")
 @Tag(name = "EP06-EP09 · Educational Library",
      description = "Biblioteca de salud preventiva y recomendaciones personalizadas.")
+@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 public class EducationalResourceController {
 
     private final EducationalResourceService service;

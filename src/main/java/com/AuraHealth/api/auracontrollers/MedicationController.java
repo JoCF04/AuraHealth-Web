@@ -21,6 +21,7 @@ import java.util.List;
 @RequestMapping("/api/v1")
 @Tag(name = "EP03 · Medication Management",
      description = "HU08-HU10 — Registro, seguimiento diario y eliminación de medicamentos")
+@PreAuthorize("hasRole('USER')")
 public class MedicationController {
 
     private final MedicationService medicationService;

@@ -20,6 +20,7 @@ import java.util.List;
 @RequestMapping("/api/v1")
 @Tag(name = "EP04 · Reminders & Appointments",
      description = "HU11-HU14, HU25-HU26 — Recordatorios médicos y citas")
+@PreAuthorize("hasRole('USER')")
 public class ReminderController {
 
     private final ReminderService reminderService;

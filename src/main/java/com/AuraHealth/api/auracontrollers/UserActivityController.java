@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/users/{userId}/activity")
 @Tag(name = "EP05 · Wellness Monitoring",
      description = "Seguimiento diario de métricas de actividad (Pasos, Agua, Sueño).")
+@PreAuthorize("hasRole('USER')")
 public class UserActivityController {
 
     private final UserActivityService service;
