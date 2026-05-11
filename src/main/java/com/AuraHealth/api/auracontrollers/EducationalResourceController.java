@@ -1,10 +1,11 @@
 package com.AuraHealth.api.auracontrollers;
 
-import com.aurahealth.api.auradtos.*;
-import com.aurahealth.api.auraservices.EducationalResourceService;
+import com.AuraHealth.api.auradtos.*;
+import com.AuraHealth.api.auraservices.EducationalResourceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
 @RequestMapping("/api/v1/resources")
 @Tag(name = "EP06-EP09 · Educational Library",
      description = "Biblioteca de salud preventiva y recomendaciones personalizadas.")
+@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 public class EducationalResourceController {
 
     private final EducationalResourceService service;

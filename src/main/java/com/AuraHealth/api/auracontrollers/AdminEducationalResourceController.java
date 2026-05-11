@@ -1,10 +1,11 @@
-package com.aurahealth.api.auracontrollers;
+package com.AuraHealth.api.auracontrollers;
 
-import com.aurahealth.api.auradtos.EducationalResourceRequestDTO;
+import com.AuraHealth.api.auradtos.EducationalResourceRequestDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdminEducationalResourceController {
 
     @Operation(summary = "Endpoint administrativo - No visible para el paciente")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<?> placeholder() {
         return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();

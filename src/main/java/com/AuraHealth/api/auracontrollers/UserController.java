@@ -1,7 +1,7 @@
 package com.AuraHealth.api.auracontrollers;
 
-import com.aurahealth.api.auradtos.*;
-import com.aurahealth.api.auraservices.UserService;
+import com.AuraHealth.api.auradtos.*;
+import com.AuraHealth.api.auraservices.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -54,6 +55,7 @@ public class UserController {
     // ── HU03 — Logout ─────────────────────────────────────────────────────────
 
     @Operation(summary = "HU03 — Cerrar sesión")
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/users/logout")
     public ResponseEntity<Void> logout() {
         return ResponseEntity.noContent().build();
@@ -66,6 +68,7 @@ public class UserController {
         @ApiResponse(responseCode = "200", description = "Perfil obtenido."),
         @ApiResponse(responseCode = "404", description = "Usuario no encontrado.")
     })
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @GetMapping("/users/{id}")
     public ResponseEntity<UserResponseDTO> getUser(
             @Parameter(description = "ID del usuario", example = "1", required = true)
@@ -75,6 +78,7 @@ public class UserController {
 
     // ── HU05 — Actualizar perfil de salud ─────────────────────────────────────
 
+    @PreAuthorize("hasRole('USER')")
     @Operation(summary = "HU05 — Actualizar perfil de salud (IMC centralizado en backend)",
                description = "El backend calcula BMI = peso/(altura²) según OMS. El frontend nunca recalcula.")
     @ApiResponses({
@@ -92,6 +96,7 @@ public class UserController {
 
     // ── HU07 — Signos vitales ─────────────────────────────────────────────────
 
+    @PreAuthorize("hasRole('USER')")
     @Operation(summary = "HU07 — Registrar signos vitales (Motor de Reglas Médicas)",
                description = "Evalúa glucosa ≥126, presión ≥140/90, colesterol ≥240. " +
                              "Si hay alerta: vitalAlertFlag=true y alertMessage con detalle.")
@@ -110,6 +115,7 @@ public class UserController {
 
     // ── HU06 — Cambiar idioma ─────────────────────────────────────────────────
 
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @Operation(summary = "HU06 — Actualizar idioma preferido (es | en)")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "Idioma actualizado."),

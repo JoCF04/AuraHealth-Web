@@ -1,7 +1,7 @@
 package com.AuraHealth.api.auracontrollers;
 
-import com.aurahealth.api.auradtos.*;
-import com.aurahealth.api.auraservices.ReminderService;
+import com.AuraHealth.api.auradtos.*;
+import com.AuraHealth.api.auraservices.ReminderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.List;
 @RequestMapping("/api/v1")
 @Tag(name = "EP04 · Reminders & Appointments",
      description = "HU11-HU14, HU25-HU26 — Recordatorios médicos y citas")
+@PreAuthorize("hasRole('USER')")
 public class ReminderController {
 
     private final ReminderService reminderService;

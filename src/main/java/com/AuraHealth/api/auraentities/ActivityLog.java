@@ -1,4 +1,4 @@
-package com.aurahealth.api.auraentities;
+package com.AuraHealth.api.auraentities;
 
 import jakarta.persistence.*;
 import lombok.Data;

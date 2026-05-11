@@ -1,8 +1,8 @@
 package com.AuraHealth.api.auracontrollers;
 
-import com.aurahealth.api.auradtos.MedicationRequestDTO;
-import com.aurahealth.api.auradtos.MedicationResponseDTO;
-import com.aurahealth.api.auraservices.MedicationService;
+import com.AuraHealth.api.auradtos.MedicationRequestDTO;
+import com.AuraHealth.api.auradtos.MedicationResponseDTO;
+import com.AuraHealth.api.auraservices.MedicationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequestMapping("/api/v1")
 @Tag(name = "EP03 · Medication Management",
      description = "HU08-HU10 — Registro, seguimiento diario y eliminación de medicamentos")
+@PreAuthorize("hasRole('USER')")
 public class MedicationController {
 
     private final MedicationService medicationService;

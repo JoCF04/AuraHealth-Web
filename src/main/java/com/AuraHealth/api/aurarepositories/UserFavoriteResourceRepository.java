@@ -1,7 +1,7 @@
 package com.AuraHealth.api.aurarepositories;
 
-import com.aurahealth.api.auraentities.UserFavoriteResource;
-import com.aurahealth.api.auraentities.UserFavoriteResourceId;
+import com.AuraHealth.api.auraentities.UserFavoriteResource;
+import com.AuraHealth.api.auraentities.UserFavoriteResourceId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
