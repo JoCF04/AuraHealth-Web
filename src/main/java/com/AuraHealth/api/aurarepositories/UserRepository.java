@@ -1,4 +1,4 @@
-package com.aurahealth.api.aurarepositories;
+package com.AuraHealth.api.aurarepositories;
 
 import com.aurahealth.api.auraentities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
