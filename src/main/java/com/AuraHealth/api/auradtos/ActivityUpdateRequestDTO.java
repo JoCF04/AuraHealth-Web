@@ -1,4 +1,4 @@
-package com.aurahealth.api.auradtos;
+package com.AuraHealth.api.auradtos;
 
 import lombok.Data;
 import java.math.BigDecimal;

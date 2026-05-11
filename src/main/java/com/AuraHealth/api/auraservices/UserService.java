@@ -1,11 +1,12 @@
 package com.AuraHealth.api.auraservices;
 
-import com.aurahealth.api.auraentities.HealthProfile;
-import com.aurahealth.api.auraentities.User;
-import com.aurahealth.api.aurarepositories.HealthProfileRepository;
-import com.aurahealth.api.aurarepositories.UserRepository;
-import com.aurahealth.api.auradtos.*;
+import com.AuraHealth.api.auraentities.HealthProfile;
+import com.AuraHealth.api.auraentities.User;
+import com.AuraHealth.api.aurarepositories.HealthProfileRepository;
+import com.AuraHealth.api.aurarepositories.UserRepository;
+import com.AuraHealth.api.auradtos.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -40,11 +41,14 @@ public class UserService {
 
     private final UserRepository          userRepository;
     private final HealthProfileRepository healthProfileRepository;
+    private final PasswordEncoder         passwordEncoder;
 
     public UserService(UserRepository userRepository,
-                       HealthProfileRepository healthProfileRepository) {
+                       HealthProfileRepository healthProfileRepository,
+                       PasswordEncoder passwordEncoder) {
         this.userRepository          = userRepository;
         this.healthProfileRepository = healthProfileRepository;
+        this.passwordEncoder         = passwordEncoder;
     }
 
     // ── HU01 — Registrar usuario ──────────────────────────────────────────────
@@ -60,7 +64,7 @@ public class UserService {
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
         user.setEmail(dto.getEmail().toLowerCase().strip());
-        user.setPasswordHash(dto.getPassword()); // En producción: BCrypt
+        user.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
         user.setGender(dto.getGender());
         user.setPreferredLanguage(
             dto.getPreferredLanguage() != null ? dto.getPreferredLanguage() : "es");
@@ -77,7 +81,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserResponseDTO loginUsuario(UserLoginRequestDTO dto) {
         User user = userRepository.findByEmail(dto.getEmail().toLowerCase().strip())
-            .filter(u -> u.getPasswordHash().equals(dto.getPassword()))
+            .filter(u -> passwordEncoder.matches(dto.getPassword(), u.getPasswordHash()))
             .orElseThrow(() -> new ResponseStatusException(
                 HttpStatus.UNAUTHORIZED, "Credenciales incorrectas"));
         return toUserDto(user);

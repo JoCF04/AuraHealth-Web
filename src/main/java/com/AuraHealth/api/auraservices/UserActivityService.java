@@ -1,11 +1,11 @@
-package com.aurahealth.api.auraservices;
+package com.AuraHealth.api.auraservices;
 
-import com.aurahealth.api.auraentities.ActivityLog;
-import com.aurahealth.api.auraentities.User;
-import com.aurahealth.api.aurarepositories.ActivityLogRepository;
-import com.aurahealth.api.aurarepositories.UserRepository;
-import com.aurahealth.api.auradtos.ActivityLogResponseDTO;
-import com.aurahealth.api.auradtos.ActivityUpdateRequestDTO;
+import com.AuraHealth.api.auraentities.ActivityLog;
+import com.AuraHealth.api.auraentities.User;
+import com.AuraHealth.api.aurarepositories.ActivityLogRepository;
+import com.AuraHealth.api.aurarepositories.UserRepository;
+import com.AuraHealth.api.auradtos.ActivityLogResponseDTO;
+import com.AuraHealth.api.auradtos.ActivityUpdateRequestDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

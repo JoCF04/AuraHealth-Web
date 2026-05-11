@@ -1,6 +1,6 @@
-package com.aurahealth.api.aurarepositories;
+package com.AuraHealth.api.aurarepositories;
 
-import com.aurahealth.api.auraentities.ActivityLog;
+import com.AuraHealth.api.auraentities.ActivityLog;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
