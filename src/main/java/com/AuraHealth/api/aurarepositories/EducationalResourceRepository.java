@@ -1,7 +1,7 @@
 package com.AuraHealth.api.aurarepositories;
 
-import com.aurahealth.api.auraentities.EducationalResource;
-import com.aurahealth.api.auraentities.ResourceFormat;
+import com.AuraHealth.api.auraentities.EducationalResource;
+import com.AuraHealth.api.auraentities.ResourceFormat;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

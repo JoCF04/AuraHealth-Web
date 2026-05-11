@@ -1,5 +1,6 @@
-package com.aurahealth.api.auraentities;
+package com.AuraHealth.api.auraentities;
 
+import com.AuraHealth.api.auraentities.User;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.math.BigDecimal;
@@ -32,4 +33,5 @@ public class ActivityLog {
 
     @Column(name = "calories_kcal")
     private Integer caloriesKcal = 0;
+
 }

@@ -1,6 +1,6 @@
 package com.AuraHealth.api.aurarepositories;
 
-import com.aurahealth.api.auraentities.Reminder;
+import com.AuraHealth.api.auraentities.Reminder;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -1,6 +1,6 @@
 package com.AuraHealth.api.aurarepositories;
 
-import com.aurahealth.api.auraentities.Medication;
+import com.AuraHealth.api.auraentities.Medication;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

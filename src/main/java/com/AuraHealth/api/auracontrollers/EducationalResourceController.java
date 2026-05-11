@@ -1,10 +1,12 @@
 package com.AuraHealth.api.auracontrollers;
 
-import com.aurahealth.api.auradtos.*;
-import com.aurahealth.api.auraservices.EducationalResourceService;
+import com.AuraHealth.api.auradtos.*;
+import com.AuraHealth.api.auraservices.EducationalResourceService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,32 +23,38 @@ public class EducationalResourceController {
         this.service = service;
     }
 
-    @Operation(summary = "HU21/HU22 (EP06) — Listar recomendaciones de salud")
+    @Operation(summary = "HU21/HU22 (EP06) — Listar recomendaciones de salud",
+               description = "Roles: USER · DOCTOR · ADMIN",
+               security = @SecurityRequirement(name = "bearerAuth"))
+    @PreAuthorize("hasAnyRole('USER','DOCTOR','ADMIN')")
     @GetMapping
     public ResponseEntity<List<EducationalResourceSummaryDTO>> getAll() {
         return ResponseEntity.ok(service.listarTodos());
     }
 
-    @Operation(summary = "HU42 (EP09) — Ver detalle de un artículo")
-    @GetMapping("/{id}")
-    public ResponseEntity<EducationalResourceResponseDTO> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.obtenerPorId(id));
-    }
-
-    @Operation(summary = "HU33 (EP09) — Buscar artículos por palabra clave")
+    @Operation(summary = "HU33 (EP09) — Buscar artículos por palabra clave",
+               description = "Roles: USER · DOCTOR · ADMIN",
+               security = @SecurityRequirement(name = "bearerAuth"))
+    @PreAuthorize("hasAnyRole('USER','DOCTOR','ADMIN')")
     @GetMapping("/search")
     public ResponseEntity<List<EducationalResourceSummaryDTO>> search(
             @RequestParam String keyword) {
         return ResponseEntity.ok(service.buscar(keyword));
     }
 
-    @Operation(summary = "HU04 (EP05) — Obtener consejos rápidos para el banner diario")
+    @Operation(summary = "HU04 (EP05) — Obtener consejos rápidos para el banner diario",
+               description = "Roles: USER · DOCTOR · ADMIN",
+               security = @SecurityRequirement(name = "bearerAuth"))
+    @PreAuthorize("hasAnyRole('USER','DOCTOR','ADMIN')")
     @GetMapping("/daily-tips")
     public ResponseEntity<List<DailyTipResponseDTO>> getDailyTips() {
         return ResponseEntity.ok(service.obtenerTipsDelDia());
     }
 
-    @Operation(summary = "HU23 (EP06) — Filtrar artículos por categoría (Nutrición, Ejercicio, etc.)")
+    @Operation(summary = "HU23 (EP06) — Filtrar artículos por categoría (Nutrición, Ejercicio, etc.)",
+               description = "Roles: USER · DOCTOR · ADMIN",
+               security = @SecurityRequirement(name = "bearerAuth"))
+    @PreAuthorize("hasAnyRole('USER','DOCTOR','ADMIN')")
     @GetMapping("/category/{category}")
     public ResponseEntity<List<EducationalResourceSummaryDTO>> getByCategory(
             @PathVariable String category) {

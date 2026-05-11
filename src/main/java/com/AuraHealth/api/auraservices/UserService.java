@@ -1,11 +1,14 @@
 package com.AuraHealth.api.auraservices;
 
-import com.aurahealth.api.auraentities.HealthProfile;
-import com.aurahealth.api.auraentities.User;
-import com.aurahealth.api.aurarepositories.HealthProfileRepository;
-import com.aurahealth.api.aurarepositories.UserRepository;
-import com.aurahealth.api.auradtos.*;
+import com.AuraHealth.api.auraentities.Role;
+import com.AuraHealth.api.auraentities.HealthProfile;
+import com.AuraHealth.api.auraentities.User;
+import com.AuraHealth.api.aurarepositories.RoleRepository;
+import com.AuraHealth.api.aurarepositories.HealthProfileRepository;
+import com.AuraHealth.api.aurarepositories.UserRepository;
+import com.AuraHealth.api.auradtos.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -14,6 +17,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Service
@@ -40,11 +44,17 @@ public class UserService {
 
     private final UserRepository          userRepository;
     private final HealthProfileRepository healthProfileRepository;
+    private final RoleRepository          roleRepository;
+    private final PasswordEncoder         passwordEncoder;
 
     public UserService(UserRepository userRepository,
-                       HealthProfileRepository healthProfileRepository) {
+                       HealthProfileRepository healthProfileRepository,
+                       RoleRepository roleRepository,
+                       PasswordEncoder passwordEncoder) {
         this.userRepository          = userRepository;
         this.healthProfileRepository = healthProfileRepository;
+        this.roleRepository          = roleRepository;
+        this.passwordEncoder         = passwordEncoder;
     }
 
     // ── HU01 — Registrar usuario ──────────────────────────────────────────────
@@ -56,31 +66,26 @@ public class UserService {
                 "El correo '" + dto.getEmail() + "' ya está registrado");
         }
 
+        String roleName = "ROLE_" + (dto.getRole() != null ? dto.getRole() : "USER");
+        Role userRole = roleRepository.findByName(roleName)
+            .orElseGet(() -> roleRepository.save(new Role(roleName)));
+
         User user = new User();
         user.setFirstName(dto.getFirstName());
         user.setLastName(dto.getLastName());
         user.setEmail(dto.getEmail().toLowerCase().strip());
-        user.setPasswordHash(dto.getPassword()); // En producción: BCrypt
+        user.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
         user.setGender(dto.getGender());
+        user.setIsEmailVerified(true);
         user.setPreferredLanguage(
             dto.getPreferredLanguage() != null ? dto.getPreferredLanguage() : "es");
+        user.setRoles(new HashSet<>(Set.of(userRole)));
 
         if (dto.getBirthDate() != null && !dto.getBirthDate().isBlank()) {
             user.setBirthDate(LocalDate.parse(dto.getBirthDate()));
         }
 
         return toUserDto(userRepository.save(user));
-    }
-
-    // ── HU02 — Login ──────────────────────────────────────────────────────────
-
-    @Transactional(readOnly = true)
-    public UserResponseDTO loginUsuario(UserLoginRequestDTO dto) {
-        User user = userRepository.findByEmail(dto.getEmail().toLowerCase().strip())
-            .filter(u -> u.getPasswordHash().equals(dto.getPassword()))
-            .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.UNAUTHORIZED, "Credenciales incorrectas"));
-        return toUserDto(user);
     }
 
     // ── HU04 — Ver perfil ─────────────────────────────────────────────────────
@@ -188,6 +193,18 @@ public class UserService {
         return toUserDto(userRepository.save(user));
     }
 
+    // ── Cambiar rol de usuario (admin) ────────────────────────────────────────
+
+    @Transactional
+    public UserResponseDTO cambiarRolDeUsuario(Long userId, String roleName) {
+        User user = requireUser(userId);
+        String fullRoleName = "ROLE_" + roleName.toUpperCase();
+        Role role = roleRepository.findByName(fullRoleName)
+            .orElseGet(() -> roleRepository.save(new Role(fullRoleName)));
+        user.setRoles(new HashSet<>(Set.of(role)));
+        return toUserDto(userRepository.save(user));
+    }
+
     // ── Helpers privados ──────────────────────────────────────────────────────
 
     private void recalculateBmi(HealthProfile p) {
@@ -245,6 +262,8 @@ public class UserService {
         dto.setFirstName(user.getFirstName());
         dto.setLastName(user.getLastName());
         dto.setEmail(user.getEmail());
+        dto.setRole(user.getRoles().stream()
+            .map(r -> r.getName()).findFirst().orElse(null));
         dto.setBirthDate(user.getBirthDate());
         dto.setGender(user.getGender());
         dto.setIsEmailVerified(user.getIsEmailVerified());

@@ -22,9 +22,13 @@ public class UserRegistrationRequestDTO {
     @Size(min = 8, message = "La contraseña debe tener al menos 8 caracteres")
     private String password;
 
-    private String birthDate;       // Formato ISO 8601: yyyy-MM-dd
+    private String birthDate;
 
     private String gender;
 
     private String preferredLanguage = "es";
+
+    @Pattern(regexp = "USER|DOCTOR|ADMIN",
+             message = "Rol inválido. Valores aceptados: USER, DOCTOR, ADMIN")
+    private String role = "USER";
 }
