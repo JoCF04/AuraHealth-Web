@@ -1,4 +1,4 @@
-package com.aurahealth.api.auradtos;
+package com.AuraHealth.api.auradtos;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
