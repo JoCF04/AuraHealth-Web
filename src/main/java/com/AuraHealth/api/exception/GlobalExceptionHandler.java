@@ -1,4 +1,4 @@
-package com.aurahealth.api.exception;
+package com.AuraHealth.api.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
