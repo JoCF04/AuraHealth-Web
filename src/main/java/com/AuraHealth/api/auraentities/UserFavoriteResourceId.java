@@ -1,4 +1,4 @@
-package com.aurahealth.api.auraentities;
+package com.AuraHealth.api.auraentities;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

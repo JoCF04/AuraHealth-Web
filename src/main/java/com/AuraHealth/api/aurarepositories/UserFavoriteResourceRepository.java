@@ -1,4 +1,4 @@
-package com.aurahealth.api.aurarepositories;
+package com.AuraHealth.api.aurarepositories;
 
 import com.aurahealth.api.auraentities.UserFavoriteResource;
 import com.aurahealth.api.auraentities.UserFavoriteResourceId;
