@@ -1,17 +1,19 @@
-package com.aurahealth.api.auracontrollers;
+package com.AuraHealth.api.auracontrollers;
 
-import com.aurahealth.api.auradtos.ActivityLogResponseDTO;
-import com.aurahealth.api.auradtos.ActivityUpdateRequestDTO;
-import com.aurahealth.api.auraservices.UserActivityService;
+import com.AuraHealth.api.auradtos.ActivityLogResponseDTO;
+import com.AuraHealth.api.auradtos.ActivityUpdateRequestDTO;
+import com.AuraHealth.api.auraservices.UserActivityService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/users/{userId}/activity")
 @Tag(name = "EP05 · Wellness Monitoring",
      description = "Seguimiento diario de métricas de actividad (Pasos, Agua, Sueño).")
+@PreAuthorize("hasRole('USER')")
 public class UserActivityController {
 
     private final UserActivityService service;

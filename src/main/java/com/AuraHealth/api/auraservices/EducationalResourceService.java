@@ -1,8 +1,8 @@
 package com.AuraHealth.api.auraservices;
 
-import com.aurahealth.api.auradtos.*;
-import com.aurahealth.api.auraentities.*;
-import com.aurahealth.api.aurarepositories.*;
+import com.AuraHealth.api.auradtos.*;
+import com.AuraHealth.api.auraentities.*;
+import com.AuraHealth.api.aurarepositories.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

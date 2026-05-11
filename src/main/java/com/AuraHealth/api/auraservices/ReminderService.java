@@ -1,12 +1,12 @@
 package com.AuraHealth.api.auraservices;
 
-import com.aurahealth.api.auraentities.Appointment;
-import com.aurahealth.api.auraentities.Reminder;
-import com.aurahealth.api.auraentities.User;
-import com.aurahealth.api.aurarepositories.AppointmentRepository;
-import com.aurahealth.api.aurarepositories.ReminderRepository;
-import com.aurahealth.api.aurarepositories.UserRepository;
-import com.aurahealth.api.auradtos.*;
+import com.AuraHealth.api.auraentities.Appointment;
+import com.AuraHealth.api.auraentities.Reminder;
+import com.AuraHealth.api.auraentities.User;
+import com.AuraHealth.api.aurarepositories.AppointmentRepository;
+import com.AuraHealth.api.aurarepositories.ReminderRepository;
+import com.AuraHealth.api.aurarepositories.UserRepository;
+import com.AuraHealth.api.auradtos.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
