@@ -1,6 +1,6 @@
-package com.aurahealth.api.auracontrollers;
+package com.AuraHealth.api.auracontrollers;
 
-import com.aurahealth.api.auradtos.EducationalResourceRequestDTO;
+import com.AuraHealth.api.auradtos.EducationalResourceRequestDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
